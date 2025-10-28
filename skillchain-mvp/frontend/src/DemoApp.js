@@ -318,21 +318,23 @@ function DemoApp() {
       return;
     }
     
-    setConfirmData({ skill: targetSkill, stakeAmount });
+    const roundedStake = Number(stakeAmount.toFixed(6));
+    setConfirmData({ skill: targetSkill, stakeAmount: roundedStake });
     setShowEndorseConfirm(true);
   };
 
   const confirmEndorse = () => {
     const { skill, stakeAmount } = confirmData;
+    const roundedStake = Number(stakeAmount.toFixed(6));
     setSkills(skills.map(s => 
       s.id === skill.id 
-        ? { ...s, endorsements: s.endorsements + 1, score: s.score + stakeAmount }
+        ? { ...s, endorsements: s.endorsements + 1, score: s.score + roundedStake }
         : s
     ));
     setEndorseId('');
     setStake('');
     setShowEndorseConfirm(false);
-    showSuccess(`Successfully endorsed "${skill.metadata}" with ${stakeAmount} tokens!`);
+    showSuccess(`Successfully endorsed "${skill.metadata}" with ${roundedStake} tokens!`);
   };
 
   const userSkills = skills.filter(s => s.owner === account);
@@ -429,7 +431,7 @@ function DemoApp() {
                   <div style={styles.skillStats}>
                     <span>{skill.verified ? '✅ Verified' : '⏳ Pending'}</span>
                     <span>👥 {skill.endorsements} endorsements</span>
-                    <span>⭐ {skill.score} reputation</span>
+                    <span>⭐ {Number(skill.score).toFixed(6).replace(/\.?0+$/, '')} reputation</span>
                   </div>
                 </div>
               ))}
@@ -522,7 +524,7 @@ function DemoApp() {
             }).map(skill => (
               <div key={skill.id} style={styles.skillItem}>
                 <strong>#{skill.id} {skill.metadata}</strong> by {skill.owner} 
-                • {skill.score} reputation • {skill.endorsements} endorsements
+                • {Number(skill.score).toFixed(6).replace(/\.?0+$/, '')} reputation • {skill.endorsements} endorsements
               </div>
             ))}
           </div>
@@ -618,12 +620,12 @@ function DemoApp() {
               </div>
               <div style={styles.skillStats}>
                 <span>Owner: {confirmData.skill.owner}</span>
-                <span>Current Score: {confirmData.skill.score}</span>
+                <span>Current Score: {Number(confirmData.skill.score).toFixed(6).replace(/\.?0+$/, '')}</span>
               </div>
             </div>
             
             <p style={{marginBottom: '20px', color: '#666', fontSize: '16px'}}>
-              You are about to stake <strong>{confirmData.stakeAmount} tokens</strong> to endorse this skill.
+              You are about to stake <strong>{Number(confirmData.stakeAmount).toFixed(6).replace(/\.?0+$/, '')} tokens</strong> to endorse this skill.
             </p>
             
             <div style={{display: 'flex', gap: '15px'}}>
